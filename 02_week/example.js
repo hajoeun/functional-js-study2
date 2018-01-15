@@ -30,8 +30,56 @@ var products = [
 
 
 // 1. 모든 수량
+var i = -1, len = products.length, total_quantity = 0;
+while (++i < len) {
+  var j = -1, l = products[i].sizes.length;
+  while (++j < l) { 
+    total_quantity += products[i].sizes[j].quantity;
+  }
+}
+console.log("1. 모든 수량:", total_quantity);
+
+
 // 2. 선택 된 총 수량
+var i = -1, len = products.length, selected_quantity = 0;
+while (++i < len) {
+  var j = -1, l = products[i].sizes.length;
+  if (products[i].is_selected) {
+    while (++j < l) {  
+      selected_quantity += products[i].sizes[j].quantity;
+    }
+  }
+}
+console.log("2. 선택된 총 수량:", selected_quantity);
+
 
 // 3. 모든 가격
+var price_sum = (memo, product) => {
+  return reduce(product.sizes, (init, size) => {
+    return init + (product.price + size.price) * size.quantity; 
+  }, memo)
+};
+console.log("3. 모든 가격:", reduce(products, price_sum, 0));
+
 // 4. 선택 된 총 가격
-  
+console.log("4. 선택된 모든 가격:", reduce(filter(products, product => product.is_selected), price_sum, 0))
+
+
+
+// go, pipe 예제
+go(products, 
+  products => filter(products, product => product.is_selected),
+  products => reduce(products, price_sum, 0),
+  console.log
+)
+
+pipe2( 
+  products => filter(products, product => product.is_selected),
+  products => reduce(products, price_sum, 0),
+)(products)
+
+
+pipe3( 
+  products => filter(products, product => product.is_selected),
+  products => reduce(products, price_sum, 0),
+)(products)
