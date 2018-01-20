@@ -21,7 +21,6 @@ function _(func) {
     // return func.apply(null, args1.concat(rest.concat(args2)));
   }
 }
-
 var partial = _;
 
 var log = console.log;
@@ -66,6 +65,7 @@ function filter(list, predi) {
 }
 
 function reduce(list, iter, memo) {
+  if (typeof list === 'function') return iter === undefined ? _(reduce, _, list) : _(reduce, _, list, iter);
   if (is_arr_like(list)) {
     var i = -1, l = list.length, 
     res = memo === undefined ? list[++i] : memo;
@@ -90,3 +90,43 @@ function pipe() {
     return go(init, ...args);
   }
 }
+
+function curry(fn) {
+  return function(a, b) {
+    return b === undefined ? function(b) { return fn(a, b) } : fn(a, b);
+  }  
+}
+
+function curryr(fn) {
+  return function(a, b) {
+    return b === undefined ? function(b) { return fn(b, a) } : fn(a, b);
+  }  
+}
+
+function curryr3(fn) {
+  return function(a, b, c) {
+    if (typeof a === 'function') {
+      if (b === undefined) {
+        return function(list, memo) {
+          return fn(list, a, memo);
+        }
+      }
+      return function(list) {
+        return fn(list, a, b);
+      }
+    } else {
+      return fn(a, b, c);
+    }
+
+    // return typeof a === 'function' ? b === undefined ? function(list, memo) { return fn(list, a, memo) } : function(list) { return fn(list, a, b) } : fn(a, b, c);
+  }
+} 
+
+function add(a, b) {
+  return a + b;
+}
+add = curry(add);
+
+each = curryr(each);
+map = curryr(map);
+filter = curryr(filter);
