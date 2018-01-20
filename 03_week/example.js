@@ -66,6 +66,6 @@ console.log("4. 선택된 모든 가격:", reduce(filter(products, product => pr
 
 
 
-// 5. 세개 이상 담으면 할인해주는 이벤트 (fif, curry, curryr, partial, val, constant)
+// 5. n개 이상 구매하면 할인해주는 이벤트 (fif, curry, curryr, partial, val, constant)
 // 선택된 상품이 n개 이상이면 '총 *개를 선택하셨습니다. 할인가로 모시겠습니다.'라는 안내 메시지, 
 // 미만이면 '아쉽네요. *개만 더 담으시면 할인이 됩니다. 더 구매하시겠어요?' 메시지
