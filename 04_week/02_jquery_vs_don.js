@@ -8,7 +8,7 @@
 // // jQuery
 // $('body');
 // $('body').addClass('container');
-//
+
 // // don.js
 // D('body');
 // D.addClass(D('body'), 'container'); // 커링 지원!
@@ -23,8 +23,8 @@
 //     })
 //     .get()
 //     .join());
-//
-//
+
+
 // // don.js
 // _.go(
 //   D('[type="checkbox"]'),
@@ -48,15 +48,15 @@ var projections = [
 ];
 
 
-// // template 함수
-// _.template$(`
-//   li#{{$.id}}
-//     .user_info#{{$.user_id}}
-//       h4 {{$._.user.name}}
-//     ul.products {{_.sum($._.products, `, _.t$(`
-//       li {{$.name}}
-//     `) ,`)}}
-//     button 주문취소`);
+// template 함수
+_.template$(`
+  li#{{$.id}}
+    .user_info#{{$.user_id}}
+      h4 {{$._.user.name}}
+    ul.products {{_.sum($._.products, `, _.t$(`
+      li {{$.name}}
+    `) ,`)}}
+    button 주문취소`);
 
 
 // don.js
@@ -69,10 +69,8 @@ _.go(
       ul.products {{_.sum($._.products, `, _.t$(`
         li {{$.name}}
       `) ,`)}}
-      button 주문취소
-      `)),
-  D.appendTo('.user_list')
-);
+      button 주문취소`)),
+  D.appendTo('.user_list'));
 
 _.go(
   D('body'),
@@ -82,12 +80,12 @@ _.go(
     D.hide
   )));
 
-_.go('body',
-  $,
-  body =>
-    $(body).on('click', 'button', __(
-      _.v('currentTarget'),
-      current => $(current).parent().hide()
-  ))
-);
+// _.go('body',
+//   $,
+//   body =>
+//     $(body).on('click', 'button', __(
+//       _.v('currentTarget'),
+//       current => $(current).parent().hide()
+//   ))
+// );
 

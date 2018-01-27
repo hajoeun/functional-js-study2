@@ -24,6 +24,13 @@
     return function(arg) { return go(fs, map(fn => fn(arg)), to_mr) }
   }
 
+  w.spread = function(...fs) {
+    return function(...args) { 
+      var i = 0, res = map(fs, fn => fn(args[i++]))
+      return to_mr(res);
+    }
+  }
+
   w.tap = function() {
     var pipe = w.pipe.apply(null, arguments);
     return function() {

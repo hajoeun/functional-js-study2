@@ -112,6 +112,10 @@
   function not_match_func(el, selector) {
     return !match_func(el, selector);
   }
+
+  function _has(obj, key) {
+    return obj != null && Object.hasOwnProperty.call(obj, key);
+  };
   function _defaults() {
     for (var i = 1, len = arguments.length, obj1 = arguments[0], s; i < len; i++)
       if (obj1 && (s = arguments[i])) for (var key in s) if (!_has(obj1, key)) obj1[key] = s[key];
