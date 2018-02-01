@@ -19,4 +19,4 @@
 
 --- 
 
-__(주의 ⚡️) 예정과 다른 순서로 진행될 수 있습니다.__
+__(⚡️) [이슈](https://github.com/joeunha/functional-js-study2/issues)에 가시면 미션을 확인하실 수 있습니다.__
