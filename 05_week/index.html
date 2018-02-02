@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <title>Movie Box</title>
+</head>
+<body class="movie_box">
+<script src="../common/partial.js"></script>
+<script src="../common/functional.js"></script>
+<script src="../common/don.js"></script>
+<script src="../common/data.js"></script>
+<!-- <script src="app.js"></script> -->
+</body>
+</html>
+
+<script>
+  var users = [
+    { name: 'ID', age: 32, city: 'seoul', blood: 'A' },
+    { name: 'BJ', age: 31, city: 'seoul', blood: 'O' },
+    { name: 'JM', age: 32, city: 'busan', blood: 'B' },
+    { name: 'PJ', age: 27, city: 'seongnam', blood: 'B' },
+    { name: 'HA', age: 27, city: 'seoul', blood: 'O' },
+    { name: 'JE', age: 27, city: 'seongnam', blood: 'O' },
+    { name: 'JI', age: 32, city: 'seongnam', blood: 'A' },
+    { name: 'MP', age: 28, city: 'busan', blood: 'O' },
+    { name: 'JY', age: 31, city: 'seoul', blood: 'AB' },
+    { name: 'TH', age: 27, city: 'busan', blood: 'O' },
+  ];
+
+  var user_filter = (city, age, blood) => 
+    _.filter(user => {
+      const a = city.length ? _.contains(city, user.city) : true,
+        b = age.length ? _.contains(age, user.age) : true, 
+        c = blood.length ? _.contains(blood, user.blood) : true
+      return _.every([a, b, c]);
+    })
+
+  _.go(users,
+    _.filter(user => user.city === 'seongnam' && user.age === 27 && user.blood === 'O'),
+    _.first,
+    _.val('name'),
+    _.log);
+
+  _.go(users,
+    _.filter(user => (user.city === 'busan' || user.city === 'seoul') && user.age === 32 && user.blood === 'A'),
+    _.first,
+    _.val('name'),
+    _.log);
+
+  _.go(users,
+    user_filter(['busan', 'seoul'], [32], ['B']),
+    _.first,
+    _.val('name'),
+    _.log);
+
+  // _.go(users,
+  //   _.all(3)
+  //     (_.filter(user => user.city === 'seongnam' && user.age === 27 && user.blood === 'O'), _.first, _.val('name'))
+  //     (_.filter(user => (user.city === 'busan' || user.city === 'seoul') && user.age === 32 && user.blood === 'A'), _.first, _.val('name'))
+  //     (user_filter(['busan', 'seoul'], [32], ['B']), _.first, _.val('name')),
+  //   _.log)
+</script>
+
+<!--
+  <진행 순서>
+    1. 문제 풀이
+      - 성남시민 중 27세이면서 O형인 사람 -> JE
+      - 부산과 서울시민 중 32세이면서 A형인 사람 -> ID
+      - 도시 / 나이 / 혈액형을 넣으면 해당하는 사람을 찾아주는 user_filter 함수 완성해보기
+
+    2. 실전 예제
+      - Movie Box: 보다 많은 데이터를 다루기 위한 예제
+      - 함수형으로의 전환
+      - _.map, _.first, _.to_mr, _.if2, ternary
+-->
