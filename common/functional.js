@@ -148,6 +148,14 @@
     return obj[key];
   }
 
+  w.ternary = function(...condition) {
+    return function(...true_predi) {
+      return function(...false_predi) {
+        return _.if2(...condition)(...true_predi).else(...false_predi);
+      }
+    }
+  }
+  
   function bexdf(setter, args) {
     for (var i = 1, len = args.length, obj1 = args[0]; i < len; i++)
       if (obj1 && args[i]) setter(obj1, args[i]);
