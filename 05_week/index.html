@@ -12,9 +12,23 @@
 <script src="../common/functional.js"></script>
 <script src="../common/don.js"></script>
 <script src="../common/data.js"></script>
-<!-- <script src="app.js"></script> -->
+<script src="app.js"></script>
 </body>
 </html>
+
+<!--
+  <진행 순서>
+    1. 문제 풀이
+      - 성남시민 중 27세이면서 O형인 사람 -> JE
+      - 부산과 서울시민 중 32세이면서 A형인 사람 -> ID
+      - 도시 / 나이 / 혈액형을 넣으면 해당하는 사람을 찾아주는 user_filter 함수 완성해보기
+
+    2. 실전 예제
+      - Movie Box: 보다 많은 데이터를 다루기 위한 예제
+      - 함수형으로의 전환
+      - _.map, _.first, _.to_mr, _.if2, ternary
+-->
+
 
 <script>
   var users = [
@@ -30,14 +44,6 @@
     { name: 'TH', age: 27, city: 'busan', blood: 'O' },
   ];
 
-  var user_filter = (city, age, blood) => 
-    _.filter(user => {
-      const a = city.length ? _.contains(city, user.city) : true,
-        b = age.length ? _.contains(age, user.age) : true, 
-        c = blood.length ? _.contains(blood, user.blood) : true
-      return _.every([a, b, c]);
-    })
-
   _.go(users,
     _.filter(user => user.city === 'seongnam' && user.age === 27 && user.blood === 'O'),
     _.first,
@@ -49,6 +55,22 @@
     _.first,
     _.val('name'),
     _.log);
+
+
+  // var user_filter = (city, age, blood) =>
+  //   _.filter(_.pipe(
+  //     user => [[city, user.city], [age, user.age], [blood, user.blood]], 
+  //     _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
+  //     _.every)) 
+
+  var item_filter = (k1, k2, k3) => 
+    (arr1, arr2, arr3) =>
+      _.filter(_.pipe(
+        item => [[arr1, item[k1]], [arr2, item[k2]], [arr3, item[k3]]],
+        _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
+        _.every)) 
+
+  const user_filter = item_filter('city', 'age', 'blood');
 
   _.go(users,
     user_filter(['busan', 'seoul'], [32], ['B']),
@@ -64,15 +86,28 @@
   //   _.log)
 </script>
 
-<!--
-  <진행 순서>
-    1. 문제 풀이
-      - 성남시민 중 27세이면서 O형인 사람 -> JE
-      - 부산과 서울시민 중 32세이면서 A형인 사람 -> ID
-      - 도시 / 나이 / 혈액형을 넣으면 해당하는 사람을 찾아주는 user_filter 함수 완성해보기
-
-    2. 실전 예제
-      - Movie Box: 보다 많은 데이터를 다루기 위한 예제
-      - 함수형으로의 전환
-      - _.map, _.first, _.to_mr, _.if2, ternary
--->
+<script>
+// 지명님 버전
+function user_filter2(cities, ages, bloods) {
+    function contains_by_key (list, obj, key) {
+      return _.contains(list, _.val(obj, key))
+    }
+    return function(users) {
+        return _.go(users,
+            _.filter( _.partial(contains_by_key, cities, _, 'city') ),
+            _.filter( _.partial(contains_by_key, ages, _, 'age') ),
+            _.filter( _.partial(contains_by_key, bloods, _, 'blood') ),
+            _.first
+        )
+    }
+}
+// 지환님 버전
+const user_filter3 = (cities, ages, bloods) =>
+      _.filter(({ city, age, blood }) =>
+        _.every([
+          _.contains(cities, city),
+          _.contains(ages, age),
+          _.contains(bloods, blood)
+        ])
+      );
+</script>

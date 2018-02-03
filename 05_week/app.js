@@ -1,5 +1,20 @@
 !function(lo) {
   const bind_current_list = data => lo.current_list = data;
+  const item_filter = (k1, k2, k3) => 
+    (arr1, arr2, arr3) =>
+      _.filter(_.pipe(
+        item => [[arr1, item[k1]], [arr2, item[k2]], [arr3, item[k3]]],
+        _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
+        _.every)) 
+
+  const item_filter2 = (...keys) => 
+    (...arrs) =>
+      _.filter(_.pipe(
+        item => _.map(keys, (key, i) => [arrs[i], item[key]]),
+        _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
+        _.every)) 
+
+  const movie_filter = item_filter2('rating', 'genre', 'director');
 
   _.each($('.movie_box'), __(
     _.c(movies),
@@ -47,13 +62,14 @@
     _.c('.movie_box'), $,
     $.on('change', '.filter input[type=checkbox]', _.pipe(
       () => {
-        // <선택한 값을 찾아서 필터링 하기>
-        // 등급, 장르, 감독을 선택해서 값을 배열로 만든 뒤,
-        // user_filter와 같은 로직의 movie_filter를 사용하면 됩니다.
+        var arr = _.map(['.rating', '.genre', '.director'], _.pipe($, $.find('input:checked'), $.val))
+        _.go(movies, 
+          movie_filter(...arr),
+          bind_current_list,
+          lo.items, 
+          $.html_to('.movie_list'))
       },
-      bind_current_list,
-      lo.items, 
-      $.html_to('.movie_list'))),
+    )),
 
     $.on('change', '.sort select', _.pipe(
       e => _.sort_by(lo.current_list || movies, e.$currentTarget.value),
