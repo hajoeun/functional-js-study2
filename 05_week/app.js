@@ -8,16 +8,13 @@
         _.every)) 
 
   const item_filter2 = (...keys) => 
-    (...arrs) => {
-      console.log("Hello");
-      return _.filter(_.pipe(
+    (...arrs) => 
+      _.filter(_.pipe(
         item => _.map(keys, (key, i) => [arrs[i], item[key]]),
         _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
-        _.every)) 
-    }
+        _.every))
       
-  const movie_filter = _.memoize(item_filter2('rating', 'genre', 'director'), function(...a) { return a; });
-  window.movie_filter = movie_filter;
+  const movie_filter = item_filter2('rating', 'genre', 'director');
 
   _.each($('.movie_box'), __(
     _.c(movies),

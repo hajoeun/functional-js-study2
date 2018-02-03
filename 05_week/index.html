@@ -56,6 +56,13 @@
     _.val('name'),
     _.log);
 
+  // var user_filter = (city, age, blood) =>
+  //     _.filter(user => {
+  //       const a = city.length ? _.contains(city, user.city) : true,
+  //         b = age.length ? _.contains(age, user.age) : true,
+  //         c = blood.length ? _.contains(blood, user.blood) : true
+  //       return _.every([a, b, c]);
+  //     })
 
   // var user_filter = (city, age, blood) =>
   //   _.filter(_.pipe(
@@ -66,7 +73,7 @@
   const ternary = (...condi) => 
       (...true_fn) => (...false_fn) => _.if2(...condi)(...true_fn).else(...false_fn)
   
-  var item_filter = (k1, k2, k3) => 
+  const item_filter = (k1, k2, k3) => 
     (arr1, arr2, arr3) =>
       _.filter(_.pipe(
         item => [[arr1, item[k1]], [arr2, item[k2]], [arr3, item[k3]]],
@@ -122,16 +129,11 @@ const user_filter3 = (cities, ages, bloods) =>
       );
 
 // 형균님 버전
-function user_filter4(cities, ages, bloods) {
-    return function (users) {
-        return _.filter(users, function (user) {
-            return _.every([_.contains(cities, user.city), _.contains(ages, user.age), _.contains(bloods, user.blood)]);
-        })
-    }
+function user_filter(cities, ages, bloods) {
+  return function (users) {
+    return _.filter(users, function (user) {
+      return _.contains(cities, user.city) && _.contains(ages, user.age) && _.contains(bloods, user.blood);
+    })
+  }
 }
-
-_.go(users,
-    user_filter4(['busan', 'seoul'], [32], ['B']),
-    _.map( user => user.name ),
-    _.log);
 </script>
