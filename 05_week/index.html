@@ -63,11 +63,14 @@
   //     _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
   //     _.every)) 
 
+  const ternary = (...condi) => 
+      (...true_fn) => (...false_fn) => _.if2(...condi)(...true_fn).else(...false_fn)
+  
   var item_filter = (k1, k2, k3) => 
     (arr1, arr2, arr3) =>
       _.filter(_.pipe(
         item => [[arr1, item[k1]], [arr2, item[k2]], [arr3, item[k3]]],
-        _.map(_.if2(_.first, _.val('length'))(_.to_mr, _.contains).else(_.c(true))),
+        _.map(ternary(_.first, _.val('length'))(_.to_mr, _.contains)(_.c(true))),
         _.every)) 
 
   const user_filter = item_filter('city', 'age', 'blood');
@@ -78,12 +81,19 @@
     _.val('name'),
     _.log);
 
-  // _.go(users,
-  //   _.all(3)
-  //     (_.filter(user => user.city === 'seongnam' && user.age === 27 && user.blood === 'O'), _.first, _.val('name'))
-  //     (_.filter(user => (user.city === 'busan' || user.city === 'seoul') && user.age === 32 && user.blood === 'A'), _.first, _.val('name'))
-  //     (user_filter(['busan', 'seoul'], [32], ['B']), _.first, _.val('name')),
-  //   _.log)
+  _.go(users,
+    _.all(
+      __(_.filter(user => user.city === 'seongnam' && user.age === 27 && user.blood === 'O'), _.first, _.val('name')),
+      __(_.filter(user => (user.city === 'busan' || user.city === 'seoul') && user.age === 32 && user.blood === 'A'), _.first, _.val('name')),
+      __(user_filter(['busan', 'seoul'], [32], ['B']), _.first, _.val('name'))),
+    _.log)
+
+  _.go(users,
+    _.all(3)
+      (_.filter(user => user.city === 'seongnam' && user.age === 27 && user.blood === 'O'), _.first, _.val('name'))
+      (_.filter(user => (user.city === 'busan' || user.city === 'seoul') && user.age === 32 && user.blood === 'A'), _.first, _.val('name'))
+      (user_filter(['busan', 'seoul'], [32], ['B']), _.first, _.val('name')),
+    _.log)
 </script>
 
 <script>
@@ -110,4 +120,18 @@ const user_filter3 = (cities, ages, bloods) =>
           _.contains(bloods, blood)
         ])
       );
+
+// 형균님 버전
+function user_filter4(cities, ages, bloods) {
+    return function (users) {
+        return _.filter(users, function (user) {
+            return _.every([_.contains(cities, user.city), _.contains(ages, user.age), _.contains(bloods, user.blood)]);
+        })
+    }
+}
+
+_.go(users,
+    user_filter4(['busan', 'seoul'], [32], ['B']),
+    _.map( user => user.name ),
+    _.log);
 </script>
