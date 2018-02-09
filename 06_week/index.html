@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <title>Movie Box</title>
+</head>
+<body class="movie_box">
+<script src="../common/partial.js"></script>
+<script src="../common/functional.js"></script>
+<script src="../common/don.js"></script>
+<script src="../common/data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+
+<!--
+  <진행 순서>
+    1. 문제 풀이
+      - 부산 외에 거주하면서 혈액형이 O형인 나이가 가장 많은 세 사람
+      - 비동기를 제어하는 go 만들기
+      - 지연 평가 소개
+
+    2. 내부 들여다보기
+      - L (lazy evaluation)
+      - memoize
+-->
+
+<script>
+var users = [
+  { name: 'ID', age: 32, city: 'seoul', blood: 'A' },
+  { name: 'BJ', age: 31, city: 'seoul', blood: 'O' },
+  { name: 'JM', age: 32, city: 'busan', blood: 'O' },
+  { name: 'PJ', age: 27, city: 'seongnam', blood: 'B' },
+  { name: 'HA', age: 27, city: 'seoul', blood: 'O' },
+  { name: 'JE', age: 27, city: 'seongnam', blood: 'O' },
+  { name: 'JI', age: 32, city: 'incheon', blood: 'A' },
+  { name: 'MP', age: 28, city: 'seoul', blood: 'O' },
+  { name: 'JY', age: 31, city: 'seoul', blood: 'O' },
+  { name: 'TH', age: 27, city: 'busan', blood: 'AB' },
+  { name: 'DS', age: 33, city: 'incheon', blood: 'O' },
+  { name: 'YJ', age: 24, city: 'busan', blood: 'O' },
+  { name: 'MB', age: 37, city: 'incheon', blood: 'B' },
+  { name: 'JJ', age: 29, city: 'busan', blood: 'A' },
+  { name: 'TU', age: 21, city: 'seoul', blood: 'O' },
+  { name: 'UB', age: 23, city: 'seongnam', blood: 'O' },
+]
+
+_.go(users,
+  _.sort_by('age'), // 나이가 
+  arr => arr.reverse(), // 가장 많은
+  _.reject(arr => arr.city === 'busan'), // 부산 외에 거주하면서
+  _.filter(arr => arr.blood === 'O'), // 혈액형이 O형인
+  // _.map(arr => arr.name), // 사람의 이름
+  _.take(3), // 세 사람
+  _.log)
+
+</script>
