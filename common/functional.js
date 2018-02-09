@@ -20,6 +20,14 @@
     return res;
   };
 
+  w.go2 = function() {
+    return function f(res, fs, i, len) {
+      if (res && res.then) return res.then(r => f(r, fs, i, len));
+      if (i < len) return f(res = res && res.__mr ? fs[i].apply(null, res) : fs[i](res), fs, ++i, len);
+      return res;
+    }(arguments[0], arguments, 1, arguments.length);
+  };
+
   w.all = function(...fs) {
     return function(arg) { return go(fs, map(fn => fn(arg)), to_mr) }
   }
@@ -184,4 +192,44 @@
   w.gte = w.curryr(function(a, b) { return a >= b; });
   w.add = w.curryr(function(a, b) { return a + b; });
   w.sub = w.curryr(function(a, b) { return a - b; });
+
+
+  w.memoize = (fn, hasher) => {
+    f.cache = {};
+    function f(...args) {
+      let key = hasher ? hasher(...args) : args;
+      if (f.cache[key]) return f.cache[key];
+      return f.cache[key] = fn(...args);
+    }
+    return f;
+  }
+
+  w.lz = {};
+  function lz_add(...fns) {
+    return list => {
+      if (list.is_lazy) return list.push(fns), list;
+      var lazy = [fns];
+      lazy.data = list;
+      lazy.is_lazy = true;
+      return lazy;
+    }
+  }
+
+  lz.map = fn => lz_add(fn, map)
+  lz.filter = fn => lz_add(fn, filter)
+  lz.reject = fn => lz_add(fn, reject)
+  lz.take = limit => {
+    return lazy => {
+      let i = -1, ll = lazy.length, dl = lazy.data.length, res = [];
+      while (++i < dl) {
+        let j = 0, v = lazy.data[i], rev = lazy[j][1]([v], lazy[j][0])[0];
+        while (++j < ll) {
+          if (rev) rev = lazy[j][1]([v], lazy[j][0])[0];
+        }
+        if (rev) res.push(rev);
+        if (res.length === limit) return res;
+      }
+    }
+  }
+
 })(typeof global == 'object' ? global : window);
