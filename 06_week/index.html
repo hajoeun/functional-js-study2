@@ -48,13 +48,53 @@ var users = [
   { name: 'UB', age: 23, city: 'seongnam', blood: 'O' },
 ]
 
+var count = 0;
 _.go(users,
   _.sort_by('age'), // 나이가 
   arr => arr.reverse(), // 가장 많은
-  _.reject(arr => arr.city === 'busan'), // 부산 외에 거주하면서
-  _.filter(arr => arr.blood === 'O'), // 혈액형이 O형인
-  // _.map(arr => arr.name), // 사람의 이름
-  _.take(3), // 세 사람
+  lz.reject(arr => {
+    count++;
+    return arr.city === 'busan'}), // 부산 외에 거주하면서
+  lz.filter(arr => {
+    count++;
+    return arr.blood === 'O'}), // 혈액형이 O형인
+  lz.map(arr => {
+    count++;
+    return arr.name}), // 사람의 이름
+  lz.take(3), // 세 사람
   _.log)
+
+console.log(count);
+</script>
+
+<script>
+  // // 형균님 버전
+  // _.go(users,
+  //   _.filter(u => u.city !== 'busan' && u.blood === 'O'),
+  //   _.sortBy(v => -v.age),
+  //   _.first(3),
+  //   _.pluck('name'),
+  //   _.log
+  // );
+
+
+  // // 지명님 버전 
+  // function reverse(list) {
+  //   return _.reduceRight(list, (prev, cur) => _.append(prev, cur), []);
+  // }
+
+  // function take(list, n) {
+  //   return _.filter(list, (val, index) => index < n)
+  // }
+
+  // _.go(users,
+  //   _.reject(__(_.val("city"), _.isEqual("busan"))),
+  //   _.filter(__(_.val("blood"), _.isEqual("O"))),
+  //   _.sortBy("age"),
+  //   reverse,
+  //   _.take(3),
+  //   _.map(arr => arr.name), // 사람의 이름
+  //   _.log
+  // )
 
 </script>

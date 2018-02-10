@@ -16,7 +16,18 @@
         _.every))
       }
 
-  const movie_filter = _.memoize(item_filter2('rating', 'genre', 'director'));
+
+  function _memoize(fn, hasher) {
+    f.cache = {};
+    function f(...args) {
+      let key = hasher(...args);
+      if (!has(f.cache, key)) return f.cache[key] = fn(...args);
+      return f.cache[key];
+    }
+    return f;
+  }
+  
+  const movie_filter = _memoize(item_filter2('rating', 'genre', 'director'), (...args) => args);
   
   window.movie_filter = movie_filter;
   
@@ -85,14 +96,23 @@
           $.html_to('.movie_list')
         ),
         values = _.map(['.rating', '.genre', '.director'], _.pipe($, $.find('input:checked'), $.val));
-        
+      
+        function go2() {
+          var i = 0, fs = arguments, len = fs.length, res = arguments[0];
+          while (++i < len) {
+            res = res instanceof Promise ? res.then(fs[i]) : fs[i](res);
+          }
+          return res;
+        }
+
         go(movies,
           movie_filter(...values),
           after_works)
 
         // async_movie_filter(query).then(after_works)
-        // go(query, async_movie_filter, after_works)
         // go2(query, async_movie_filter, after_works)
+        // go2(query, async_movie_filter, after_works)
+        // asy_go(query, async_movie_filter, after_works)
       },
     )),
 
@@ -109,15 +129,15 @@
       _.go(lo.current_list || movies,
         _.sort_by('attendance'),
         arr => arr.reverse(),
-        _.reject(arr => {
+        L.reject(arr => {
           count++
           return arr.director === '홍상수'
         }),
-        _.filter(arr => {
+        L.filter(arr => {
           count++
           return arr.rating === '15세 이상 관람가'
         }),
-        _.first(3),
+        L.take(3),
         lo.items,
         $.html_to('.movie_list'))
 

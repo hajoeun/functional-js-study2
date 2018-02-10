@@ -20,12 +20,13 @@
     return res;
   };
 
-  w.go2 = function() {
-    return function f(res, fs, i, len) {
-      if (res && res.then) return res.then(r => f(r, fs, i, len));
-      if (i < len) return f(res = res && res.__mr ? fs[i].apply(null, res) : fs[i](res), fs, ++i, len);
+  w.asy_go = function() {
+    var fs = arguments, i = 0, len = arguments.length;
+    return function f(res) {
+      if (res && res.then) return res.then(f);
+      if (i < len) return f(fs[i++](res));
       return res;
-    }(arguments[0], arguments, 1, arguments.length);
+    }(arguments[i++]);
   };
 
   w.all = function(...fs) {
