@@ -216,17 +216,15 @@
     }
   }
 
-  lz.map = fn => lz_add(fn, map)
-  lz.filter = fn => lz_add(fn, filter)
-  lz.reject = fn => lz_add(fn, reject)
+  lz.map = fn => lz_add(map, fn)
+  lz.filter = fn => lz_add(filter, fn)
+  lz.reject = fn => lz_add(reject, fn)
   lz.take = limit => {
     return lazy => {
       let i = -1, ll = lazy.length, dl = lazy.data.length, res = [];
       while (++i < dl) {
-        let j = 0, v = lazy.data[i], rev = lazy[j][1]([v], lazy[j][0])[0];
-        while (++j < ll) {
-          if (rev) rev = lazy[j][1]([v], lazy[j][0])[0];
-        }
+        let j = 0, v = lazy.data[i], rev = lazy[j][0]([v], lazy[j][1])[0];
+        while (rev && ++j < ll) rev = lazy[j][0]([v], lazy[j][1])[0];
         if (rev) res.push(rev);
         if (res.length === limit) return res;
       }

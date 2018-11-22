@@ -50,8 +50,8 @@ var users = [
 
 var count = 0;
 _.go(users,
-  _.sort_by('age'), // 나이가 
-  arr => arr.reverse(), // 가장 많은
+  _.sort_by(user => -user.age), // 나이가 
+  // arr => arr.reverse(), // 가장 많은
   lz.reject(arr => {
     count++;
     return arr.city === 'busan'}), // 부산 외에 거주하면서
